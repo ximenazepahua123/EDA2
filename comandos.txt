@@ -1,0 +1,8 @@
+Prepara los cambios en la terminal de VS Code:
+git add .
+
+Guarda una versión (commit) con un mensaje breve sobre lo que hiciste:
+git commit -m "Agrego función de lectura de datos"
+
+Sube los cambios a GitHub:
+git push
