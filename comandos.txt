@@ -6,3 +6,7 @@ git commit -m "Agrego función de lectura de datos"
 
 Sube los cambios a GitHub:
 git push
+
+
+baja los cambios
+git pull

@@ -1,4 +1,5 @@
-# main.py
+# 1. Agregamos la importación de persistencia aquí arriba
+from persistencia import cargar_inventario, guardar_inventario
 
 from datos import CATALOGO_PRODUCTOS
 from grafo import GRAFO_OXXO, bfs_ruta_corta 
@@ -11,7 +12,7 @@ from algoritmos import (
 
 def mostrar_menu():
     print("\n========================================")
-    print("      SISTEMA PUNTO DE VENTA - OXXO     ")
+    print("        SISTEMA PUNTO DE VENTA - OXXO     ")
     print("========================================")
     print("1. Mostrar catálogo de productos")
     print("2. Ordenar catálogo por precio  Ascendente / Descendente")
@@ -19,11 +20,11 @@ def mostrar_menu():
     print("4. Buscar producto por Nombre ")#(Búsqueda Lineal)
     print("5. Buscar producto por Precio exacto ")#(Búsqueda Binaria)
     print("6. Simular recorrido de abastecimiento en Tienda ")#(Grafo BFS)
-    print("7. Salir")
+    print("7. Registrar venta / Actualizar stock (Guardar cambios)") # 
+    print("8. Salir") # 
 
 def ejecutar_sistema():
-    # Copia mutable del catálogo en memoria
-    catalogo_actual = CATALOGO_PRODUCTOS.copy()
+    catalogo_actual = cargar_inventario(CATALOGO_PRODUCTOS)
 
     while True:
         mostrar_menu()
@@ -101,11 +102,33 @@ def ejecutar_sistema():
                 print(" -> ".join(ruta))
                 print(f"Número de conexiones: {len(ruta) - 1}")
 
+        # 3. NUEVA OPCIÓN: Simula la venta, actualiza el stock y guarda automáticamente en el archivo .pkl
         elif opcion == "7":
+            print("\n=== REGISTRAR VENTA / ACTUALIZAR STOCK ===")
+            try:
+                id_venta = int(input("Ingrese el ID del producto vendido: "))
+                encontrado = False
+                for p in catalogo_actual:
+                    if p['id'] == id_venta:
+                        encontrado = True
+                        if p['stock'] > 0:
+                            p['stock'] -= 1  # Modificamos el campo stock (operación real)
+                            print(f"¡Venta registrada con éxito! Nuevo stock de '{p['nombre']}': {p['stock']}")
+                            # Guardamos los cambios inmediatamente en el archivo
+                            guardar_inventario(catalogo_actual)
+                        else:
+                            print("\n Aviso: El producto está agotado (Stock en 0).")
+                        break
+                if not encontrado:
+                    print("\n Aviso: No se encontró ningún producto con ese ID.")
+            except ValueError:
+                print("\nError: Debe ingresar un número entero válido para el ID.")
+
+        elif opcion == "8": # Opción de salida actualizada
             print("\n¡Gracias por utilizar el sistema OXXO! Saliendo...")
             break
         else:
-            print("\nError Opción no válida. Intente de nuevo ingresando un número del 1 al 7.")
+            print("\nError Opción no válida. Intente de nuevo ingresando un número del 1 al 8.")
 
 if __name__ == "__main__":
     ejecutar_sistema()
