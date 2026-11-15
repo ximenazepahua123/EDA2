@@ -20,8 +20,9 @@ def mostrar_menu():
     print("4. Buscar producto por Nombre ")#(Búsqueda Lineal)
     print("5. Buscar producto por Precio exacto ")#(Búsqueda Binaria)
     print("6. Simular recorrido de abastecimiento en Tienda ")#(Grafo BFS)
-    print("7. Registrar venta / Actualizar stock (Guardar cambios)") # 
-    print("8. Salir") # 
+    print("7. Registrar venta / Actualizar stock (Guardar cambios)") #
+    print("8. Agregar nuevo producto (Alta)") 
+    print("9. Salir") # 
 
 def ejecutar_sistema():
     catalogo_actual = cargar_inventario(CATALOGO_PRODUCTOS)
@@ -124,11 +125,39 @@ def ejecutar_sistema():
             except ValueError:
                 print("\nError: Debe ingresar un número entero válido para el ID.")
 
-        elif opcion == "8": # Opción de salida actualizada
+        elif opcion == "8":
+            print("\n=== AGREGAR NUEVO PRODUCTO ===")
+            try:
+                nuevo_id = int(input("Ingrese el ID del nuevo producto: "))
+                if any(p["id"] == nuevo_id for p in catalogo_actual):
+                    print("\nAviso: Ya existe un producto con ese ID.")
+                    continue
+
+                nuevo_nombre = input("Ingrese el nombre del producto: ").strip()
+                if not nuevo_nombre:
+                    print("\nError: El nombre no puede estar vacío.")
+                    continue
+
+                nuevo_precio = float(input("Ingrese el precio: "))
+                nuevo_stock = int(input("Ingrese el stock inicial: "))
+                if nuevo_precio <= 0 or nuevo_stock < 0:
+                    print("\nError: El precio debe ser mayor a 0 y el stock no puede ser negativo.")
+                    continue
+
+                catalogo_actual.append({
+                    "id": nuevo_id,
+                    "nombre": nuevo_nombre,
+                    "precio": nuevo_precio,
+                    "stock": nuevo_stock
+                })
+                guardar_inventario(catalogo_actual)
+            except ValueError:
+                print("\nError: Ingrese valores numéricos válidos para ID, precio y stock.")
+
+        elif opcion == "9":
             print("\n¡Gracias por utilizar el sistema OXXO! Saliendo...")
             break
         else:
-            print("\nError Opción no válida. Intente de nuevo ingresando un número del 1 al 8.")
-
+            print("\nError: Opción no válida. Intente de nuevo ingresando un número del 1 al 9.")
 if __name__ == "__main__":
     ejecutar_sistema()
